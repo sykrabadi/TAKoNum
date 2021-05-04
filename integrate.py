@@ -7,6 +7,18 @@ func = (2*x**4) + (4*x**2)
 res = integrate.quad(func, 1, 3)
 print(res)
 """
+class shared_property:
+   def __init__(self, a, b, n, func):
+       self.func = None
+       self.a = None
+       self.b = None
+       self.n = None
+
+class trapezoid(shared_property):
+    pass
+
+class simpson(shared_property):
+    pass
 
 #kode di bawah untuk mencari nilai integral menggunakan metode simpson 1/3
 str_func = "(2*x**4) + (4*x**2)"
