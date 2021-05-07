@@ -16,57 +16,76 @@ class shared_property:
 
 class trapezoid(shared_property):
     def trapezoid_summary():
-        print("""
-        Summar for trapezoid method
+        return """
+        Summary for simpson method
         Lower bound (a) = {}
         Upper bound (b) = {}
-        Segment (n) = {}
-        Funcion = {}
-        """.format(shared_property.a, shared_property.b, shared_property.n, shared_property.func)) 
+        Segment (n)     = {}
+        Function        = {}
+        """.format(shared_property.a, shared_property.b, shared_property.n, shared_property.func)
 
     def calculate_trapezoid():
-        func = lambda x: eval(shared_property.func)
-
+        a = int(shared_property.a)
+        b = int(shared_property.b)
+        n = int(shared_property.n)
+        eval_func = str(shared_property.func)
+        fn = "f0 "
         result_list = list()
         result = 0
-        h = (shared_property.b - shared_property.a) / shared_property.n
-
-        fn = "f0 "
-
-        n_segment = np.arange(shared_property.a, shared_property.b+h, h)
+        func = lambda x: eval(eval_func)
+        
+        h = (b - a) / n
+        n_segment = np.arange(a, b+h, h)
         res = list(map(func, n_segment))
 
         for i in range(len(n_segment)):
             print("f{} = {}".format(i, res[i]))
+            if((i>0) and (i<n)):
+                fn = fn + "+ 2f{} ".format(i)
+                result_list.append(2*res[i])
+
+        result_list.insert(0, res[0])
+        result_list.append(res[-1])
+        result = (h/2)*(sum(result_list))
+
+        fn = fn + "+ f{}".format(n)
+
+        return """
+        Result  = {}
+        I       = {}
+        """.format(result, fn)
+        
 
 class simpson(shared_property):
     def simpson_summary():
-        print("""
-        Summar for simpson method
+        return """
+        Summary for simpson method
         Lower bound (a) = {}
         Upper bound (b) = {}
-        Segment (n) = {}
-        Funcion = {}
-        """.format(shared_property.a, shared_property.b, shared_property.n, shared_property.func)) 
+        Segment (n)     = {}
+        Function        = {}
+        """.format(shared_property.a, shared_property.b, shared_property.n, shared_property.func)
 
     def calculate_simpson():
-        func = lambda x: eval(shared_property.func)
-
+        a = int(shared_property.a)
+        b = int(shared_property.b)
+        n = int(shared_property.n)
+        eval_func = str(shared_property.func)
+        fn = "f0 "
         result_list = list()
         result = 0
-        h = (shared_property.b - shared_property.a) / shared_property.n
+        func = lambda x: eval(eval_func)
 
-        fn = "f0 "
-
-        n_segment = np.arange(shared_property.a, shared_property.b+h, h)
+        h = (b - a) / n
+        n_segment = np.arange(a, b+h, h)
         res = list(map(func, n_segment))
 
         for i in range(len(n_segment)):
             print("f{} = {}".format(i, res[i]))
-            if((i>=1) and (i%2!=0) and (i!=shared_property.n)):
+            if((i>=1) and (i%2!=0) and (i<n)):
                 fn =  fn + "+ 4f{} ".format(i)
                 result_list.append(4*res[i])
-            elif((i>=2) and (i%2==0) and (i!=shared_property.n)):
+            elif((i>=2) and (i%2==0) and (i!=n)):
                 fn =  fn + "+ 2f{} ".format(i)
                 result_list.append(2*res[i])
         
@@ -74,14 +93,19 @@ class simpson(shared_property):
         result_list.append(res[-1])
         result = (h/3)*(sum(result_list))
 
-        fn = fn + "+ f{}".format(shared_property.n)
-        print("I = {}".format(fn))
-        print("Hasil : {}".format(result))
-        print(result_list)
+        fn = fn + "+ f{}".format(n)
 
-shared_property.func = "x**2"
-shared_property.a = 2
-shared_property.b = 5
-shared_property.n = 3
+        return """
+        Result  = {}
+        I       = {}
+        """.format(result, fn)
 
-trapezoid.trapezoid_summary()
+#values below are examples
+shared_property.func = "(2*x**4) + (4*x**2)"
+shared_property.a = 1
+shared_property.b = 3
+shared_property.n = 4
+"""
+trapezoid result : 136.125
+simpson resilt : 131.5
+"""

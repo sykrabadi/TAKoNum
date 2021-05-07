@@ -2,11 +2,11 @@ import telebot
 from telebot import types
 from integrate import shared_property, trapezoid, simpson
 
-api_token = '1729042010:AAEzMUnDxm1WI--y410-H0fNiYu-FNmA3oQ'
+api_token = '<api token here>'
 bot = telebot.TeleBot(api_token)
 
-error_bound_msg = "Unable to continue the operation, because lower bound is greater than upperbound, to restart the progress, type /calculate again"
-n_value_msg = "Unable to continue the operation, because n segment less than 2, to restart the progress, type /calculate again"
+error_bound_msg = "Unable to continue the operation, because lower bound is greater than upperbound, to restart the progress, type calculate again"
+n_value_msg = "Unable to continue the operation, because n segment less than 2, to restart the progress, type calculate again"
 
 @bot.message_handler(commands=['exit'])
 def send_help(message):
@@ -16,51 +16,111 @@ def send_help(message):
 
 @bot.message_handler(commands=['calculate'])
 def start(message):
-    bot.send_message(message.chat.id, "Type the expression")
-    shared_property.func = message.text
-    bot.register_next_step_handler(message, choice_handler)
+    bot.reply_to(message, "Type the expression")
+    bot.register_next_step_handler(message, function_handler)
+
+def function_handler(message):
+    bot.reply_to(message, "Retype the expression")
+    func = message.text
+    shared_property.func = func
+    bot.register_next_step_handler(message, reply_handler)
 
 def choice_handler(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-    markup.add('Trapezoid', 'Simpson')
-    bot.reply_to(message, "Select computation method" ,reply_markup=markup)
-    bot.register_next_step_handler(message, reply_handler)
+    markup.add('/Trapezoid', '/Simpson')
+    msg = bot.reply_to(message, "Select computation method" ,reply_markup=markup)
+    bot.send_message(message.chat.id, msg)
+    bot.register_next_step_handler(msg, reply_handler)
 
 def reply_handler(message):
-    if(message.text == "Trapezoid"):
-        msg = bot.reply_to(message, "Specify number of trapezoid")
-        trapezoid.n = message.text
-        bot.register_next_step_handler(msg, trapezoid_a_handler)
-    elif(message.text == "Simpson"):
-        msg = bot.reply_to(message, "Specify number of segment")
-        simpson.n = message.text
-        bot.register_next_step_handler(msg, simpson_b_handler)
+    if(message.text == "/Trapezoid"):
+        bot.register_next_step_handler(message, trapezoid_n_handler)
+    elif(message.text == "/Simpson"):
+        bot.register_next_step_handler(message, simpson_n_handler)
+    chat_id = message.chat.id
 
 #running trapezoid handler
+@bot.message_handler(commands=['trapezoid'])
+def start_handler(message):
+    msg = bot.reply_to(message, "Specify function")
+    bot.register_next_step_handler(msg, trapezoid_function_handler)
+
+def trapezoid_function_handler(message):
+    chat_id = message.chat.id
+    function = message.text
+    shared_property.func = function
+    msg = bot.reply_to(message, "Specify number of trapezoid (n)")
+    bot.register_next_step_handler(msg, trapezoid_n_handler)
+
+def trapezoid_n_handler(message):
+    chat_id = message.chat.id
+    n = message.text
+    shared_property.n = n
+    msg = bot.reply_to(message, "Specify trapezoid lower bound value (a)")
+    bot.register_next_step_handler(msg, trapezoid_a_handler)
+
 def trapezoid_a_handler(message):
-    bot.reply_to(message, "Specify lower bound value (a)")
-    trapezoid.a = message.text
-    bot.register_next_step_handler(message, trapezoid_b_handler)
+    chat_id = message.chat.id
+    a = message.text
+    shared_property.a = a
+    msg = bot.reply_to(message, "Specify trapezoid upper bound value (b)")
+    bot.register_next_step_handler(msg, trapezoid_b_handler)
 
 def trapezoid_b_handler(message):
-    bot.reply_to(message, "Specify upper bound value (b)")
-    trapezoid.b = message.text
-    bot.register_next_step_handler(message, trapezoid_check_bound_handler)
+    chat_id = message.chat.id
+    b = message.text
+    shared_property.b = b
+    bot.send_message(chat_id, trapezoid.trapezoid_summary())
+    bot.send_message(chat_id, trapezoid.calculate_trapezoid())
 
-def trapezoid_check_bound_handler(message):
-    if(trapezoid.a > trapezoid.b):
-        bot.send_message(message.chat.id, error_bound_msg)
+def trapezoid_summary_and_calculate(message):
+    chat_id = message.chat.id
+    bot.send_message(chat_id, trapezoid.trapezoid_summary())
+    bot.send_message(chat_id, trapezoid.calculate_trapezoid())
+
+def trapezoid_calculate(message):
+    result = trapezoid.calculate_trapezoid()
+    bot.reply_to(message, result)
+    bot.send_message(message, "Calculation Finished")
 
 #running simpson handler
+@bot.message_handler(commands=['simpson'])
+def start_handler(message):
+    msg = bot.reply_to(message, "Specify function")
+    bot.register_next_step_handler(msg, simpson_function_handler)
+
+def simpson_function_handler(message):
+    chat_id = message.chat.id
+    function = message.text
+    shared_property.func = function
+    msg = bot.reply_to(message, "Specify number of segment (n)")
+    bot.register_next_step_handler(msg, simpson_n_handler)
+
+def simpson_n_handler(message):
+    chat_id = message.chat.id
+    n = message.text
+    shared_property.n = n
+    msg = bot.reply_to(message, "Specify simpson lower bound value (a)")
+    bot.register_next_step_handler(msg, simpson_a_handler)
+
 def simpson_a_handler(message):
-    bot.reply_to(message, "Specify lower bound value (a)")
-    simpson.a =  message.text
-    bot.register_next_step_handler(message, simpson_b_handler)
+    chat_id = message.chat.id
+    a = message.text
+    shared_property.a = a
+    msg = bot.reply_to(message, "Specify simpson upper bound value (b)")
+    bot.register_next_step_handler(msg, simpson_b_handler)
 
 def simpson_b_handler(message):
-    bot.reply_to(message, "Specify upper bound value (b)")
-    simpson.b = message.text
-    bot.register_next_step_handler(message, simpson_check_bound_handler)
+    chat_id = message.chat.id
+    b = message.text
+    shared_property.b = b
+    bot.send_message(chat_id, simpson.simpson_summary())
+    bot.send_message(chat_id, simpson.calculate_simpson())
+
+def trapezoid_summary_and_calculate(message):
+    chat_id = message.chat.id
+    bot.send_message(chat_id, trapezoid.trapezoid_summary())
+    bot.send_message(chat_id, trapezoid.calculate_trapezoid())
 
 def simpson_check_bound_handler(message):
     if(simpson.n < 2):
@@ -71,7 +131,7 @@ def simpson_check_bound_handler(message):
 # Enable saving next step handlers to file "./.handlers-saves/step.save".
 # Delay=2 means that after any change in next step handlers (e.g. calling register_next_step_handler())
 # saving will hapen after delay 2 seconds.
-bot.enable_save_next_step_handlers(delay=0.5)
+bot.enable_save_next_step_handlers(delay=1)
 
 # Load next_step_handlers from save file (default "./.handlers-saves/step.save")
 # WARNING It will work only if enable_save_next_step_handlers was called!
