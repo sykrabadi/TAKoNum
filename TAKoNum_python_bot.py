@@ -11,8 +11,27 @@ n_value_msg = "Unable to continue the operation, because n segment less than 2, 
 @bot.message_handler(commands=['exit'])
 def send_help(message):
     print('bot has been shutdown')
-    bot.reply_to(message, 'See you')
+    msg = u"See you next time! \uE41E"
+    bot.reply_to(message,  msg)
     bot.polling(none_stop=True)
+
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    chat_id = message.chat.id
+    msg = u"""
+    Hello, welcome to telegram integration bot!
+
+    The commands : 
+    \U0001F916 /start       : Start the conversation
+    \U0001F916 /trapezoid   : Calculate integration using trapezoid method
+    \U0001F916 /simpson     : Calculate integration using simpson method
+    \U0001F916 /exit        : End the conversation
+
+    The rules :
+    \u2705 Expression should be written in "x"
+    \u2705 Number of segments, lower bound, and upper bound should be numbers
+    """
+    bot.reply_to(message, msg)
 
 @bot.message_handler(commands=['calculate'])
 def start(message):
@@ -55,6 +74,10 @@ def trapezoid_function_handler(message):
 def trapezoid_n_handler(message):
     chat_id = message.chat.id
     n = message.text
+    if not n.isdigit():
+        msg = bot.reply_to(message, "Number of trapezoid must be a number")
+        bot.register_next_step_handler(msg, trapezoid_n_handler)
+        return
     shared_property.n = n
     msg = bot.reply_to(message, "Specify trapezoid lower bound value (a)")
     bot.register_next_step_handler(msg, trapezoid_a_handler)
@@ -62,6 +85,10 @@ def trapezoid_n_handler(message):
 def trapezoid_a_handler(message):
     chat_id = message.chat.id
     a = message.text
+    if not a.isdigit():
+        msg = bot.reply_to(message, "Lower bound value must be a number")
+        bot.register_next_step_handler(msg, trapezoid_n_handler)
+        return
     shared_property.a = a
     msg = bot.reply_to(message, "Specify trapezoid upper bound value (b)")
     bot.register_next_step_handler(msg, trapezoid_b_handler)
@@ -69,6 +96,10 @@ def trapezoid_a_handler(message):
 def trapezoid_b_handler(message):
     chat_id = message.chat.id
     b = message.text
+    if not b.isdigit():
+        msg = bot.reply_to(message, "Upper bound value must be a number")
+        bot.register_next_step_handler(msg, trapezoid_n_handler)
+        return
     shared_property.b = b
     bot.send_message(chat_id, trapezoid.trapezoid_summary())
     bot.send_message(chat_id, trapezoid.calculate_trapezoid())
@@ -99,6 +130,10 @@ def simpson_function_handler(message):
 def simpson_n_handler(message):
     chat_id = message.chat.id
     n = message.text
+    if not n.isdigit():
+        msg = bot.reply_to(message, "Number of trapezoid must be a number")
+        bot.register_next_step_handler(msg, trapezoid_n_handler)
+        return
     shared_property.n = n
     msg = bot.reply_to(message, "Specify simpson lower bound value (a)")
     bot.register_next_step_handler(msg, simpson_a_handler)
@@ -106,6 +141,10 @@ def simpson_n_handler(message):
 def simpson_a_handler(message):
     chat_id = message.chat.id
     a = message.text
+    if not a.isdigit():
+        msg = bot.reply_to(message, "Lower bound value must be a number")
+        bot.register_next_step_handler(msg, trapezoid_n_handler)
+        return
     shared_property.a = a
     msg = bot.reply_to(message, "Specify simpson upper bound value (b)")
     bot.register_next_step_handler(msg, simpson_b_handler)
@@ -113,6 +152,10 @@ def simpson_a_handler(message):
 def simpson_b_handler(message):
     chat_id = message.chat.id
     b = message.text
+    if not b.isdigit():
+        msg = bot.reply_to(message, "Upper bound value must be a number")
+        bot.register_next_step_handler(msg, trapezoid_n_handler)
+        return
     shared_property.b = b
     bot.send_message(chat_id, simpson.simpson_summary())
     bot.send_message(chat_id, simpson.calculate_simpson())
