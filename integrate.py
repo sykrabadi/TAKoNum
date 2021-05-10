@@ -50,10 +50,15 @@ class trapezoid(shared_property):
 
         fn = fn + "+ f{}".format(n)
 
+        actual_result, error = integrate.quad(func, a, b)
+
+        realtive_error = 100 * (abs(result - actual_result) / actual_result)
+
         return """
         Result  = {}
         I       = {}
-        """.format(result, fn)
+        Error   = {} %
+        """.format(result, fn, realtive_error)
         
 
 class simpson(shared_property):
@@ -94,18 +99,37 @@ class simpson(shared_property):
         result = (h/3)*(sum(result_list))
 
         fn = fn + "+ f{}".format(n)
+    
+        actual_result, error = integrate.quad(func, a, b)
+
+        realtive_error = 100 * (abs(result - actual_result) / actual_result)
 
         return """
         Result  = {}
         I       = {}
-        """.format(result, fn)
+        Error   = {} %
+        """.format(result, fn, realtive_error)
+"""
+values below are examples for exception handling
 
-#values below are examples
+try:
+    func = lambda x : eval(str("(2*a**4) + (4*x**2)"))
+    res = func(0)
+    print(res)
+except NameError:
+    print("Expression should be written in x")
+"""
+"""
 shared_property.func = "(2*x**4) + (4*x**2)"
 shared_property.a = 1
 shared_property.b = 3
 shared_property.n = 4
-"""
+res = trapezoid.calculate_trapezoid()
+print(res)
+func = lambda x: (2*x**4) + (4*x**2)
+res, err = integrate.quad(func, 1, 3)
+print(res)
+print(err)
 trapezoid result : 136.125
 simpson resilt : 131.5
 """
