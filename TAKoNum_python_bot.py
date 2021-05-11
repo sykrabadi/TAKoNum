@@ -1,5 +1,4 @@
 import telebot
-from telebot import types
 from integrate import shared_property, trapezoid, simpson
 from messages import messages
 
