@@ -77,7 +77,7 @@ def trapezoid_b_handler(message):
     b = message.text
     if not b.isdigit():
         msg = bot.reply_to(message, messages.upper_bound_error())
-        bot.register_next_step_handler(msg, trapezoid_nbhandler)
+        bot.register_next_step_handler(msg, trapezoid_b_handler)
         return
     shared_property.b = b
     bot.send_message(chat_id, trapezoid.trapezoid_summary())
@@ -107,7 +107,7 @@ def simpson_n_handler(message):
     chat_id = message.chat.id
     n = message.text
     if not n.isdigit():
-        msg = bot.reply_to(message, msg.n_value_error())
+        msg = bot.reply_to(message, messages.n_value_error())
         bot.register_next_step_handler(msg, simpson_n_handler)
         return
     shared_property.n = n
@@ -118,7 +118,7 @@ def simpson_a_handler(message):
     chat_id = message.chat.id
     a = message.text
     if not a.isdigit():
-        msg = bot.reply_to(message, msg.lower_bound_error())
+        msg = bot.reply_to(message, messages.lower_bound_error())
         bot.register_next_step_handler(msg, simpson_a_handler)
         return
     shared_property.a = a
@@ -129,7 +129,7 @@ def simpson_b_handler(message):
     chat_id = message.chat.id
     b = message.text
     if not b.isdigit():
-        msg = bot.reply_to(message, msg.upper_bound_error())
+        msg = bot.reply_to(message, messages.upper_bound_error())
         bot.register_next_step_handler(msg, simpson_b_handler)
         return
     shared_property.b = b

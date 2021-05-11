@@ -1,0 +1,1 @@
+worker: python TAKoNum_python_bot.py
