@@ -3,7 +3,7 @@ from telebot import types
 from integrate import shared_property, trapezoid, simpson
 from messages import messages
 
-api_token = '<api token here>'
+api_token = '1729042010:AAEzMUnDxm1WI--y410-H0fNiYu-FNmA3oQ'
 bot = telebot.TeleBot(api_token)
 
 @bot.message_handler(commands=['exit'])
