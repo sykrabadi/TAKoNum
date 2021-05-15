@@ -1,1 +1,1 @@
-worker: python TAKoNum_python_bot.py
+web: python3 TAKoNum_python_bot.py
