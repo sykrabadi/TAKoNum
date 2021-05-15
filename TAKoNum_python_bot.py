@@ -146,4 +146,4 @@ bot.enable_save_next_step_handlers(delay=1)
 bot.load_next_step_handlers()
 
 #print('bot start running')
-#bot.polling(none_stop=False)
+bot.polling(none_stop=False)
