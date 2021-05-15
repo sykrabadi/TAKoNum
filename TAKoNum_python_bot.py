@@ -161,7 +161,7 @@ def getMessage():
 @server.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://safe-dusk-12684.herokuapp.com/' + api_token)
+    bot.set_webhook(url='https://konumtelegrambot.herokuapp.com/' + api_token)
     return "!", 200
 
 
