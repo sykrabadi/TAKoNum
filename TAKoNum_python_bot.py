@@ -2,7 +2,7 @@ import telebot
 from integrate import shared_property, trapezoid, simpson
 from messages import messages
 
-api_token = '1729042010:AAEzMUnDxm1WI--y410-H0fNiYu-FNmA3oQ'
+api_token = '<API Token Here>'
 bot = telebot.TeleBot(api_token)
 
 @bot.message_handler(commands=['exit'])
@@ -145,5 +145,5 @@ bot.enable_save_next_step_handlers(delay=1)
 # WARNING It will work only if enable_save_next_step_handlers was called!
 bot.load_next_step_handlers()
 
-#print('bot start running')
+print('bot start running')
 bot.polling(none_stop=False)
